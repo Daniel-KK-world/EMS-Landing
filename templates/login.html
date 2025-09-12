@@ -4,22 +4,28 @@
     <meta charset="UTF-8" />
     <title>Secure Employee Login</title>
     <link rel="stylesheet" href="/static/styles.css" />
-    <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js"></script>
   </head>
   <body>
     <div class="overlay"></div>
     <div class="login-container bg-transparent">
       <h2>Employee Portal</h2>
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
 
-      
       <form method="POST" action="/login">
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
+        <input type="email" name="email" placeholder="Email" required />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
         <button type="submit">Login</button>
       </form>
+
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, msg in messages %}
+      <p class="flash {{ category }}">{{ msg }}</p>
+      {% endfor %} {% endif %} {% endwith %}
+    </div>
 
     <footer>Built by A-Technologies — Productivity Apps for Enterprises</footer>
   </body>
