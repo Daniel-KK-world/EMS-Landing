@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Secure Employee Login</title>
-  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js"></script>
-  <style>
+
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: url('ATECHblacklogo.png') no-repeat center center fixed;
+      background: url('../static/ATECHblacklogo.png') no-repeat center center fixed;
       background-size: cover;
       display: flex;
       justify-content: center;
@@ -82,20 +75,4 @@
       color: #aaa;
       font-size: 12px;
     }
-  </style>
-</head>
-<body>
-  <div class="overlay"></div>
-  <div class="login-container bg-transparent">
-    <h2>Employee Portal</h2>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <p id="message"></p>
-  </div>
-
-  <footer>
-    Built by A-Technologies — Productivity Apps for Enterprises
-  </footer>
-</body>
-</html>
+ 
