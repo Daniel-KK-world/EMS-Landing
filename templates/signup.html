@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin — Register Employee</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="overlay"></div>
+    <div class="login-container bg-transparent">
+      <h2>Register New Employee</h2>
+      <p style="margin-bottom: 20px; font-size: 14px; color: #ccc">
+        Only administrators can add employees to the system.
+      </p>
+
+      <form method="POST" action="/signup">
+        <input
+          type="email"
+          name="email"
+          placeholder="Employee Email"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Temporary Password"
+          required
+        />
+        <button type="submit">Create Account</button>
+      </form>
+
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, msg in messages %}
+      <p class="flash {{ category }}">{{ msg }}</p>
+      {% endfor %} {% endif %} {% endwith %}
+    </div>
+
+    <footer>Built by A-Technologies — Productivity Apps for Enterprises</footer>
+  </body>
+</html>
