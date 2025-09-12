@@ -97,40 +97,5 @@
   <footer>
     Built by A-Technologies — Productivity Apps for Enterprises
   </footer>
-
-  <script>
-    // 🔹 Firebase Config (replace with client’s project keys)
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT",
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    async function login() {
-      const email = document.getElementById('email').value;
-      const pw = document.getElementById('password').value;
-      const msg = document.getElementById('message');
-
-      try {
-        const userCred = await auth.signInWithEmailAndPassword(email, pw);
-        const user = userCred.user;
-        msg.style.color = "lightgreen";
-        msg.innerText = "✅ Login successful. Continue in your desktop application.";
-        const token = await user.getIdToken();
-        console.log("User token:", token);
-      } catch (err) {
-        msg.style.color = "tomato";
-        if (err.code === "auth/user-not-found") {
-          msg.innerText = "❌ You are not registered in the system. Please contact your administrator.";
-        } else if (err.code === "auth/wrong-password") {
-          msg.innerText = "❌ Incorrect password.";
-        } else {
-          msg.innerText = "❌ " + err.message;
-        }
-      }
-    }
-  </script>
 </body>
 </html>
