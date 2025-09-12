@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Secure Employee Login</title>
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('ATECHblacklogo.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 1;
+      background: rgba(20, 20, 20, 0.9);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .login-container h2 {
+      margin-bottom: 20px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #4CAF50;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 10px;
+      text-align: center;
+      width: 100%;
+      color: #aaa;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="login-container bg-transparent">
+    <h2>Employee Portal</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="message"></p>
+  </div>
+
+  <footer>
+    Built by A-Technologies — Productivity Apps for Enterprises
+  </footer>
+
+  <script>
+    // 🔹 Firebase Config (replace with client’s project keys)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    async function login() {
+      const email = document.getElementById('email').value;
+      const pw = document.getElementById('password').value;
+      const msg = document.getElementById('message');
+
+      try {
+        const userCred = await auth.signInWithEmailAndPassword(email, pw);
+        const user = userCred.user;
+        msg.style.color = "lightgreen";
+        msg.innerText = "✅ Login successful. Continue in your desktop application.";
+        const token = await user.getIdToken();
+        console.log("User token:", token);
+      } catch (err) {
+        msg.style.color = "tomato";
+        if (err.code === "auth/user-not-found") {
+          msg.innerText = "❌ You are not registered in the system. Please contact your administrator.";
+        } else if (err.code === "auth/wrong-password") {
+          msg.innerText = "❌ Incorrect password.";
+        } else {
+          msg.innerText = "❌ " + err.message;
+        }
+      }
+    }
+  </script>
+</body>
+</html>
