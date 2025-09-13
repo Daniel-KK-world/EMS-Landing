@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # change this
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # To suppress warning
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
@@ -20,12 +21,23 @@ class User(db.Model):
 @app.route("/")
 def home():
     if "user_id" in session:
-        return f"Welcome back, {session['user_email']}!"
+        return redirect(url_for("return_to_app"))
     return redirect(url_for("login"))
+
+# Add the missing route
+@app.route("/app")
+def return_to_app():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    return render_template("app.html", email=session['user_email'])
 
 # LOGIN
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    # If already logged in, redirect to app
+    if "user_id" in session:
+        return redirect(url_for("return_to_app"))
+        
     if request.method == "POST":
         email = request.form.get("email")
         pw = request.form.get("password")
@@ -40,7 +52,7 @@ def login():
                 return redirect(url_for("change_password"))
 
             flash("✅ Login successful", "success")
-            return redirect(url_for("home"))
+            return redirect(url_for("return_to_app"))
         else:
             flash("❌ Invalid email or password", "danger")
 
@@ -74,27 +86,35 @@ def change_password():
         return redirect(url_for("login"))
 
     user = User.query.get(session["user_id"])
+    
     if request.method == "POST":
         new_pw = request.form.get("new_password")
         confirm_pw = request.form.get("confirm_password")
 
+        if not new_pw or not confirm_pw:
+            flash("❌ Please fill in all fields", "danger")
+            return redirect(url_for("change_password"))
+            
         if new_pw != confirm_pw:
             flash("❌ Passwords do not match", "danger")
             return redirect(url_for("change_password"))
 
+        # Update password
         user.password = bcrypt.generate_password_hash(new_pw).decode("utf-8")
         user.must_change_password = False
         db.session.commit()
+        
         flash("✅ Password updated successfully", "success")
-        return redirect(url_for("home"))
+        return redirect(url_for("return_to_app"))
 
     return render_template("change_password.html")
 
 # LOGOUT
-@app.route("/home")
-def dashboard():
-    if "user_id" in session:
-        return render_template("home.html")
+@app.route("/logout")
+def logout():
+    # Clear session completely
+    session.clear()
+    flash("👋 You have been logged out", "info")
     return redirect(url_for("login"))
 
 # -------------------- MAIN --------------------

@@ -1,0 +1,191 @@
+[
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "redirect",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "session",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "flash",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "SQLAlchemy",
+        "importPath": "flask_sqlalchemy",
+        "description": "flask_sqlalchemy",
+        "isExtraImport": true,
+        "detail": "flask_sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Bcrypt",
+        "importPath": "flask_bcrypt",
+        "description": "flask_bcrypt",
+        "isExtraImport": true,
+        "detail": "flask_bcrypt",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "kind": 6,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "class User(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    email = db.Column(db.String(150), unique=True, nullable=False)\n    password = db.Column(db.String(200), nullable=False)\n    must_change_password = db.Column(db.Boolean, default=True)  # Force reset on first login\n    is_admin = db.Column(db.Boolean, default=False)  # Optional, if you want admin accounts\n# -------------------- ROUTES --------------------\n@app.route(\"/\")\ndef home():\n    if \"user_id\" in session:",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "home",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def home():\n    if \"user_id\" in session:\n        return redirect(url_for(\"return_to_app\"))\n    return redirect(url_for(\"login\"))\n# Add the missing route\n@app.route(\"/app\")\ndef return_to_app():\n    if \"user_id\" not in session:\n        return redirect(url_for(\"login\"))\n    return render_template(\"app.html\", email=session['user_email'])",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "return_to_app",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def return_to_app():\n    if \"user_id\" not in session:\n        return redirect(url_for(\"login\"))\n    return render_template(\"app.html\", email=session['user_email'])\n# LOGIN\n@app.route(\"/login\", methods=[\"GET\", \"POST\"])\ndef login():\n    # If already logged in, redirect to app\n    if \"user_id\" in session:\n        return redirect(url_for(\"return_to_app\"))",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "login",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def login():\n    # If already logged in, redirect to app\n    if \"user_id\" in session:\n        return redirect(url_for(\"return_to_app\"))\n    if request.method == \"POST\":\n        email = request.form.get(\"email\")\n        pw = request.form.get(\"password\")\n        user = User.query.filter_by(email=email).first()\n        if user and bcrypt.check_password_hash(user.password, pw):\n            session[\"user_id\"] = user.id",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "signup",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def signup():\n    # you could add: if not current_user.is_admin: abort(403)\n    if request.method == \"POST\":\n        email = request.form.get(\"email\")\n        temp_pw = request.form.get(\"password\")  # Admin chooses or generates temporary password\n        existing = User.query.filter_by(email=email).first()\n        if existing:\n            flash(\"❌ Email already registered\", \"warning\")\n        else:\n            hashed_pw = bcrypt.generate_password_hash(temp_pw).decode(\"utf-8\")",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "change_password",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def change_password():\n    if \"user_id\" not in session:\n        return redirect(url_for(\"login\"))\n    user = User.query.get(session[\"user_id\"])\n    if request.method == \"POST\":\n        new_pw = request.form.get(\"new_password\")\n        confirm_pw = request.form.get(\"confirm_password\")\n        if not new_pw or not confirm_pw:\n            flash(\"❌ Please fill in all fields\", \"danger\")\n            return redirect(url_for(\"change_password\"))",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "logout",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def logout():\n    # Clear session completely\n    session.clear()\n    flash(\"👋 You have been logged out\", \"info\")\n    return redirect(url_for(\"login\"))\n# -------------------- MAIN --------------------\nif __name__ == \"__main__\":\n    with app.app_context():\n        db.create_all()\n    app.run(debug=True)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app = Flask(__name__)\napp.secret_key = \"supersecretkey\"  # change this\napp.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'\napp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # To suppress warning\ndb = SQLAlchemy(app)\nbcrypt = Bcrypt(app)\n# -------------------- MODELS --------------------\nclass User(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    email = db.Column(db.String(150), unique=True, nullable=False)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app.secret_key",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app.secret_key = \"supersecretkey\"  # change this\napp.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'\napp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # To suppress warning\ndb = SQLAlchemy(app)\nbcrypt = Bcrypt(app)\n# -------------------- MODELS --------------------\nclass User(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    email = db.Column(db.String(150), unique=True, nullable=False)\n    password = db.Column(db.String(200), nullable=False)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app.config['SQLALCHEMY_DATABASE_URI']",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'\napp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # To suppress warning\ndb = SQLAlchemy(app)\nbcrypt = Bcrypt(app)\n# -------------------- MODELS --------------------\nclass User(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    email = db.Column(db.String(150), unique=True, nullable=False)\n    password = db.Column(db.String(200), nullable=False)\n    must_change_password = db.Column(db.Boolean, default=True)  # Force reset on first login",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app.config['SQLALCHEMY_TRACK_MODIFICATIONS']",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # To suppress warning\ndb = SQLAlchemy(app)\nbcrypt = Bcrypt(app)\n# -------------------- MODELS --------------------\nclass User(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    email = db.Column(db.String(150), unique=True, nullable=False)\n    password = db.Column(db.String(200), nullable=False)\n    must_change_password = db.Column(db.Boolean, default=True)  # Force reset on first login\n    is_admin = db.Column(db.Boolean, default=False)  # Optional, if you want admin accounts",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "db = SQLAlchemy(app)\nbcrypt = Bcrypt(app)\n# -------------------- MODELS --------------------\nclass User(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    email = db.Column(db.String(150), unique=True, nullable=False)\n    password = db.Column(db.String(200), nullable=False)\n    must_change_password = db.Column(db.Boolean, default=True)  # Force reset on first login\n    is_admin = db.Column(db.Boolean, default=False)  # Optional, if you want admin accounts\n# -------------------- ROUTES --------------------",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "bcrypt",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "bcrypt = Bcrypt(app)\n# -------------------- MODELS --------------------\nclass User(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    email = db.Column(db.String(150), unique=True, nullable=False)\n    password = db.Column(db.String(200), nullable=False)\n    must_change_password = db.Column(db.Boolean, default=True)  # Force reset on first login\n    is_admin = db.Column(db.Boolean, default=False)  # Optional, if you want admin accounts\n# -------------------- ROUTES --------------------\n@app.route(\"/\")",
+        "detail": "app",
+        "documentation": {}
+    }
+]

@@ -2,29 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Create User - A-Technologies</title>
+    <title>Employee Portal - A-Technologies</title>
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
     <div class="overlay"></div>
-    <div class="login-container bg-transparent">
-      <h2>Create Employee Account</h2>
+    <div class="login-container">
+      <header>
+        <h1>Welcome to Employee Portal</h1>
+        <a href="/logout" class="logout-btn">Logout</a>
+      </header>
 
-      <form method="POST" action="/signup">
-        <input
-          type="email"
-          name="email"
-          placeholder="Employee Email"
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Temporary Password"
-          required
-        />
-        <button type="submit">Create Account</button>
-      </form>
+      <div class="welcome-message">
+        <h2>Hello, {{ email }}!</h2>
+        <p>
+          You have successfully logged in to the A-Technologies Employee Portal.
+        </p>
+      </div>
 
       {% with messages = get_flashed_messages(with_categories=true) %} {% if
       messages %} {% for category, msg in messages %}
